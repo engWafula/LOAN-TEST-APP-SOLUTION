@@ -1,9 +1,9 @@
 import { useState, FormEvent } from 'react';
-import { addPayment } from '../../utils/api';
-import { LoadingSpinner } from '../ui/LoadingSpinner';
-import { ErrorMessage } from '../ui/ErrorMessage';
-import { Modal } from '../ui/Modal';
-import { LoanData } from '../../utils/paymentStatus';
+import { addPayment } from '../../../utils/api';
+import { LoadingSpinner } from '../../ui/LoadingSpinner';
+import { ErrorMessage } from '../../ui/ErrorMessage';
+import { Modal } from '../../ui/Modal';
+import { LoanData } from '../../../utils/paymentStatus';
 import './AddPaymentModal.css';
 
 interface AddPaymentModalProps {

@@ -1,5 +1,5 @@
-import { CategorizedPayment } from '../../utils/paymentStatus';
-import { PaymentStatus } from '../ui/PaymentStatus';
+import { CategorizedPayment } from '../../../utils/paymentStatus';
+import { PaymentStatus } from '../../ui/PaymentStatus';
 import './LoanCard.css';
 
 interface LoanCardProps {

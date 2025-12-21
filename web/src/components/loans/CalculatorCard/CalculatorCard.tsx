@@ -1,4 +1,4 @@
-import { LoanCalculator } from './LoanCalculator';
+import { LoanCalculator } from '../LoanCalculator';
 import './CalculatorCard.css';
 
 export function CalculatorCard() {

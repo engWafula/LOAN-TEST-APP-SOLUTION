@@ -1,4 +1,4 @@
-import { PaymentStatus as StatusType } from '../utils/paymentStatus';
+import { PaymentStatus as StatusType } from '../../../utils/paymentStatus';
 import './PaymentStatus.css';
 
 interface PaymentStatusProps {

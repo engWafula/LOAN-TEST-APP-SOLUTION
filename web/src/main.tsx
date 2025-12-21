@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import './index.css'
 import App from './App.tsx'
-import { ErrorBoundary } from './components/ui/ErrorBoundary';
+import { ErrorBoundary } from './components/ui';
 
 const client = new ApolloClient({
   uri: "http://localhost:2024/graphql",
