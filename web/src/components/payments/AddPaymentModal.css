@@ -1,0 +1,122 @@
+.add-payment__success {
+  padding: 0.75rem 1rem;
+  background-color: #d1fae5;
+  border: 1px solid #86efac;
+  border-radius: 0.375rem;
+  color: #065f46;
+  margin-bottom: 1rem;
+}
+
+.add-payment__form {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-payment__field {
+  margin-bottom: 1.5rem;
+}
+
+.add-payment__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.add-payment__input,
+.add-payment__select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  font-family: inherit;
+  background-color: #ffffff;
+}
+
+.add-payment__input:focus,
+.add-payment__select:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+.add-payment__input:disabled,
+.add-payment__select:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+  color: #6b7280;
+}
+
+.add-payment__select {
+  cursor: pointer;
+}
+
+.add-payment__select option {
+  padding: 0.5rem;
+}
+
+.add-payment__hint {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.add-payment__actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.add-payment__button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-payment__button--cancel {
+  background-color: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.add-payment__button--cancel:hover:not(:disabled) {
+  background-color: #f9fafb;
+}
+
+.add-payment__button--submit {
+  background-color: #646cff;
+  color: #ffffff;
+  border: none;
+}
+
+.add-payment__button--submit:hover:not(:disabled) {
+  background-color: #535bf2;
+}
+
+.add-payment__button--submit:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.add-payment__button:disabled {
+  cursor: not-allowed;
+}
+
+.add-payment__button:focus {
+  outline: 2px solid #646cff;
+  outline-offset: 2px;
+}
+
+.add-payment__button-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
