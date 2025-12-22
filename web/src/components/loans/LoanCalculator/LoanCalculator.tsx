@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react';
-import './LoanCalculator.css';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { formatCurrency } from '@/lib/formatters';
 
 interface LoanCalculatorProps {
   principal: number;
@@ -20,29 +28,37 @@ export function LoanCalculator({ principal, rate, months }: LoanCalculatorProps)
   }, [principal, rate, months]);
 
   return (
-    <div className="loan-calculator">
-      <div className="loan-calculator__fields">
-        <div className="loan-calculator__row">
-          <span className="loan-calculator__label">Principal</span>
-          <span className="loan-calculator__value">${principal.toLocaleString()}</span>
-        </div>
-        <div className="loan-calculator__row">
-          <span className="loan-calculator__label">Interest Rate</span>
-          <span className="loan-calculator__value">{rate}%</span>
-        </div>
-        <div className="loan-calculator__row">
-          <span className="loan-calculator__label">Duration</span>
-          <span className="loan-calculator__value">{months} months</span>
-        </div>
-      </div>
-      <div className="loan-calculator__divider">
-        <div className="loan-calculator__total">
-          <span className="loan-calculator__total-label">Total Interest</span>
-          <span className="loan-calculator__total-value">
-            ${interest.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </span>
-        </div>
-      </div>
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Field</TableHead>
+            <TableHead className="text-right">Value</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell className="text-muted-foreground">Principal</TableCell>
+            <TableCell className="text-right font-semibold">
+              {formatCurrency(principal)}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="text-muted-foreground">Interest Rate</TableCell>
+            <TableCell className="text-right font-semibold">{rate}%</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="text-muted-foreground">Duration</TableCell>
+            <TableCell className="text-right font-semibold">{months} months</TableCell>
+          </TableRow>
+          <TableRow className="border-t-2">
+            <TableCell className="font-medium">Total Interest</TableCell>
+            <TableCell className="text-right font-bold text-primary text-lg">
+              {formatCurrency(interest)}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </div>
   );
 }

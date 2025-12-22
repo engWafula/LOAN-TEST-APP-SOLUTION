@@ -5,11 +5,11 @@ import { Modal } from '../Modal';
 
 describe('Modal', () => {
   beforeEach(() => {
-    document.body.style.overflow = '';
+    document.body.classList.remove('overflow-hidden');
   });
 
   afterEach(() => {
-    document.body.style.overflow = '';
+    document.body.classList.remove('overflow-hidden');
   });
 
   it('should not render when isOpen is false', () => {
@@ -40,7 +40,7 @@ describe('Modal', () => {
       </Modal>
     );
     
-    const closeButton = screen.getByRole('button', { name: /×/ });
+    const closeButton = screen.getByRole('button', { name: /close/i });
     await user.click(closeButton);
     
     expect(onClose).toHaveBeenCalledTimes(1);
@@ -55,7 +55,7 @@ describe('Modal', () => {
       </Modal>
     );
     
-    const overlay = document.querySelector('.modal__overlay');
+    const overlay = screen.getByText('Test Modal').closest('div')?.parentElement;
     expect(overlay).toBeInTheDocument();
     
     if (overlay) {
@@ -86,7 +86,7 @@ describe('Modal', () => {
       </Modal>
     );
     
-    expect(document.body.style.overflow).toBe('unset');
+    expect(document.body.classList.contains('overflow-hidden')).toBe(false);
     
     rerender(
       <Modal isOpen={true} onClose={vi.fn()} title="Test Modal">
@@ -94,7 +94,7 @@ describe('Modal', () => {
       </Modal>
     );
     
-    expect(document.body.style.overflow).toBe('hidden');
+    expect(document.body.classList.contains('overflow-hidden')).toBe(true);
   });
 
   it('should handle Escape key', async () => {
@@ -110,4 +110,3 @@ describe('Modal', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 });
-

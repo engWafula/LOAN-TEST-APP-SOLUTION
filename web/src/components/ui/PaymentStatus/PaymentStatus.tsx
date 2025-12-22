@@ -1,5 +1,5 @@
 import { PaymentStatus as StatusType } from '../../../utils/paymentStatus';
-import './PaymentStatus.css';
+import { cn } from '@/lib/utils';
 
 interface PaymentStatusProps {
   status: StatusType;
@@ -7,15 +7,21 @@ interface PaymentStatusProps {
 }
 
 const statusClassMap: Record<StatusType, string> = {
-  'On Time': 'payment-status--on-time',
-  'Late': 'payment-status--late',
-  'Defaulted': 'payment-status--defaulted',
-  'Unpaid': 'payment-status--unpaid',
+  'On Time': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
+  'Late': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100',
+  'Defaulted': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100',
+  'Unpaid': 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100',
 };
 
-export function PaymentStatus({ status, className = '' }: PaymentStatusProps) {
+export function PaymentStatus({ status, className }: PaymentStatusProps) {
   return (
-    <span className={`payment-status ${statusClassMap[status]} ${className}`}>
+    <span
+      className={cn(
+        'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold',
+        statusClassMap[status],
+        className
+      )}
+    >
       {status}
     </span>
   );

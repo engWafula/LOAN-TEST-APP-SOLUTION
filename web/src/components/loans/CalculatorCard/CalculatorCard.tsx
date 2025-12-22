@@ -1,14 +1,25 @@
 import { LoanCalculator } from '../LoanCalculator';
-import './CalculatorCard.css';
 
-export function CalculatorCard() {
+interface CalculatorCardProps {
+  principal?: number;
+  rate?: number;
+  months?: number;
+}
+
+export function CalculatorCard({
+  principal = 10000,
+  rate = 5.0,
+  months = 12,
+}: CalculatorCardProps) {
   return (
-    <div className="calculator-card">
-      <h3 className="calculator-card__title">Loan Interest Calculator</h3>
-      <p className="calculator-card__description">
-        Calculate the total interest for a loan based on principal, interest rate, and duration.
-      </p>
-      <LoanCalculator principal={10000} rate={5.0} months={12} />
+    <div className="space-y-4">
+      <div>
+        <h3 className="text-lg font-semibold mb-2">Loan Interest Calculator</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          Calculate the total interest for a loan based on principal, interest rate, and duration.
+        </p>
+      </div>
+      <LoanCalculator principal={principal} rate={rate} months={months} />
     </div>
   );
 }

@@ -1,82 +1,53 @@
 import { useState } from 'react';
-import { useQuery } from '@apollo/client';
-import { GET_LOANS_QUERY } from './graphql/queries';
-import { categorizeLoanPayments, LoanData } from './utils/paymentStatus';
-import { Header } from './components/layout/Header';
-import { LoanCard } from './components/loans/LoanCard';
+import { LoansTable } from './components/loans/LoansTable';
 import { AddPaymentModal } from './components/payments/AddPaymentModal';
-import { LoadingSpinner } from './components/ui/LoadingSpinner';
-import { ErrorMessage } from './components/ui/ErrorMessage';
+import { Alert, AlertDescription, AlertTitle } from './components/ui/alert';
+import { LoadingOverlay } from './components/ui/LoadingOverlay';
 import { CalculatorCard } from './components/loans/CalculatorCard';
-import './App.css';
+import { AlertCircle } from 'lucide-react';
+import { useLoans } from './hooks/useLoans';
 
 function App() {
   const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
-  const { data, loading, error, refetch } = useQuery(GET_LOANS_QUERY, {
-    variables: { page: 1, pageSize: 0 },
-    errorPolicy: 'all',
-  });
+  const { categorizedPayments, uniqueLoans, loading, error, refetch } = useLoans();
 
   const handlePaymentAdded = () => {
     refetch();
   };
 
-  const loans: LoanData[] = (data?.loans?.loans || [])
-    .filter((loan): loan is LoanData => loan !== null)
-    .map(loan => ({
-      ...loan,
-      loanPayments: loan.loanPayments || [],
-    }));
-  const categorizedPayments = categorizeLoanPayments(loans);
-  
-  const uniqueLoans = loans.reduce((acc, loan) => {
-    if (!acc.find(l => l.id === loan.id)) {
-      acc.push(loan);
-    }
-    return acc;
-  }, [] as LoanData[]);
-
   return (
-    <div className="app">
-      <Header onAddPaymentClick={() => setIsAddPaymentModalOpen(true)} />
-
-      <div className="app__container">
-        {loading && (
-          <div className="app__loading">
-            <LoadingSpinner size="large" message="Loading loans and payments..." />
-          </div>
-        )}
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8 relative min-h-[400px]">
+        <LoadingOverlay isLoading={loading} message="Loading loans and payments..." />
 
         {error && (
-          <div className="app__error">
-            <ErrorMessage message={error.message} onRetry={() => refetch()} />
-          </div>
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              {error.message}
+              <button
+                onClick={() => refetch()}
+                className="ml-2 underline hover:no-underline"
+              >
+                Retry
+              </button>
+            </AlertDescription>
+          </Alert>
         )}
 
-        <div className="app__grid" style={{ opacity: loading ? 0.3 : 1 }}>
+        <div className={`grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8 ${loading ? 'opacity-30' : ''}`}>
           <div>
-            <section className="app__section">
-              <h2 className="app__section-title">Loans & Payments</h2>
-              {!loading && !error && categorizedPayments.length === 0 ? (
-                <div className="app__empty-state">
-                  <p className="app__empty-state-text">No loans found</p>
-                </div>
-              ) : (
-                !loading && (
-                  <div>
-                    {categorizedPayments.map((payment) => (
-                      <LoanCard
-                        key={`${payment.id}-${payment.paymentDate || 'unpaid'}`}
-                        payment={payment}
-                      />
-                    ))}
-                  </div>
-                )
-              )}
-            </section>
+            {!loading && !error && (
+              <LoansTable
+                payments={categorizedPayments}
+                itemsPerPage={20}
+                onAddPaymentClick={() => setIsAddPaymentModalOpen(true)}
+              />
+            )}
           </div>
 
-          <div className="app__sidebar">
+          <div className="lg:sticky lg:top-8 h-fit">
             <CalculatorCard />
           </div>
         </div>

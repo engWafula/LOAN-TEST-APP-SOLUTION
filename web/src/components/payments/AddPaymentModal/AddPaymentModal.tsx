@@ -1,10 +1,29 @@
 import { useState, FormEvent } from 'react';
 import { addPayment } from '../../../utils/api';
-import { LoadingSpinner } from '../../ui/LoadingSpinner';
-import { ErrorMessage } from '../../ui/ErrorMessage';
-import { Modal } from '../../ui/Modal';
 import { LoanData } from '../../../utils/paymentStatus';
-import './AddPaymentModal.css';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Loader } from '@/components/ui/loader';
+import { FormField } from '@/components/ui/FormField';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { CheckCircle2, AlertCircle } from 'lucide-react';
+import { formatCurrency } from '@/lib/formatters';
 
 interface AddPaymentModalProps {
   isOpen: boolean;
@@ -67,79 +86,91 @@ export function AddPaymentModal({ isOpen, onClose, onPaymentAdded, loans }: AddP
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="Add New Payment">
-      {error && <ErrorMessage message={error} />}
+    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>Add New Payment</DialogTitle>
+          <DialogDescription>
+            Record a payment for an existing loan.
+          </DialogDescription>
+        </DialogHeader>
 
-      {success && (
-        <div className="add-payment__success">
-          Payment added successfully!
-        </div>
-      )}
+        {error && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-      <form className="add-payment__form" onSubmit={handleSubmit}>
-        <div className="add-payment__field">
-          <label htmlFor="loan-select" className="add-payment__label">
-            Select Loan *
-          </label>
-          <select
-            id="loan-select"
-            value={loanId}
-            onChange={(e) => setLoanId(e.target.value)}
-            required
-            disabled={isSubmitting || loans.length === 0}
-            className="add-payment__select"
-          >
-            <option value="">-- Select a loan --</option>
-            {loans.map((loan) => (
-              <option key={loan.id} value={loan.id}>
-                {loan.name} (ID: {loan.id}) - ${loan.principal.toLocaleString()}
-              </option>
-            ))}
-          </select>
-          {loans.length === 0 && (
-            <p className="add-payment__hint">No loans available</p>
-          )}
-        </div>
+        {success && (
+          <Alert className="border-green-500 bg-green-50 text-green-900 dark:bg-green-950 dark:text-green-100">
+            <CheckCircle2 className="h-4 w-4" />
+            <AlertTitle>Success</AlertTitle>
+            <AlertDescription>Payment added successfully!</AlertDescription>
+          </Alert>
+        )}
 
-        <div className="add-payment__field">
-          <label htmlFor="payment-date" className="add-payment__label">
-            Payment Date (optional)
-          </label>
-          <input
-            id="payment-date"
-            type="date"
-            value={paymentDate}
-            onChange={(e) => setPaymentDate(e.target.value)}
-            disabled={isSubmitting}
-            className="add-payment__input"
+        {loans.length === 0 ? (
+          <EmptyState
+            title="No loans available"
+            description="There are no loans available to add payments to."
           />
-        </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <FormField label="Select Loan" htmlFor="loan-select" required>
+              <Select
+                value={loanId}
+                onValueChange={setLoanId}
+                disabled={isSubmitting}
+                required
+              >
+                <SelectTrigger id="loan-select">
+                  <SelectValue placeholder="-- Select a loan --" />
+                </SelectTrigger>
+                <SelectContent>
+                  {loans.map((loan) => (
+                    <SelectItem key={loan.id} value={loan.id.toString()}>
+                      {loan.name} (ID: {loan.id}) - {formatCurrency(loan.principal)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormField>
 
-        <div className="add-payment__actions">
-          <button
-            type="button"
-            onClick={handleClose}
-            disabled={isSubmitting}
-            className="add-payment__button add-payment__button--cancel"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="add-payment__button add-payment__button--submit"
-          >
-            {isSubmitting ? (
-              <span className="add-payment__button-content">
-                <LoadingSpinner size="small" inline />
-                Adding...
-              </span>
-            ) : (
-              'Add Payment'
-            )}
-          </button>
-        </div>
-      </form>
-    </Modal>
+            <FormField label="Payment Date" htmlFor="payment-date" optional>
+              <Input
+                id="payment-date"
+                type="date"
+                value={paymentDate}
+                onChange={(e) => setPaymentDate(e.target.value)}
+                disabled={isSubmitting}
+              />
+            </FormField>
+
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleClose}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader size="sm" className="mr-2" />
+                    Adding...
+                  </>
+                ) : (
+                  'Add Payment'
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -1,4 +1,5 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
+import { Button } from '@/components/ui/button';
 
 interface Props {
   children: ReactNode;
@@ -26,29 +27,19 @@ export class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: '2rem', textAlign: 'center' }}>
-          <h2 style={{ color: '#ef4444', marginBottom: '1rem' }}>Something went wrong</h2>
-          <p style={{ color: '#6b7280', marginBottom: '1rem' }}>
+        <div className="p-8 text-center">
+          <h2 className="text-red-600 mb-4 text-xl font-semibold">Something went wrong</h2>
+          <p className="text-gray-500 mb-4">
             {this.state.error?.message || 'An unexpected error occurred'}
           </p>
-          <button
+          <Button
             onClick={() => {
               this.setState({ hasError: false, error: null });
               window.location.reload();
             }}
-            style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#646cff',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '0.375rem',
-              cursor: 'pointer',
-              fontSize: '1rem',
-              fontWeight: 500,
-            }}
           >
             Reload Page
-          </button>
+          </Button>
         </div>
       );
     }
@@ -56,4 +47,3 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
-
