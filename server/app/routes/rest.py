@@ -1,7 +1,7 @@
 import logging
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError as MarshmallowValidationError
-from app.services.loan_service import LoanService
+from app.services.service_factory import get_loan_service
 from app.validators.payment_schema import PaymentCreateSchema
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ def add_payment():
         loan_id = validated_data["loan_id"]
         payment_date = validated_data.get("payment_date")
         
-        service = LoanService()
+        service = get_loan_service()
         payment = service.add_payment(loan_id, payment_date)
         
         logger.info(f"Payment added: {payment.id} for loan {loan_id}")

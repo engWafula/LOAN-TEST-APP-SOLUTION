@@ -53,16 +53,16 @@ function App() {
           </div>
         )}
 
-        {!loading && !error && (
-          <div className="app__grid">
-            <div>
-              <section className="app__section">
-                <h2 className="app__section-title">Loans & Payments</h2>
-                {categorizedPayments.length === 0 ? (
-                  <div className="app__empty-state">
-                    <p className="app__empty-state-text">No loans found</p>
-                  </div>
-                ) : (
+        <div className="app__grid" style={{ opacity: loading ? 0.3 : 1 }}>
+          <div>
+            <section className="app__section">
+              <h2 className="app__section-title">Loans & Payments</h2>
+              {!loading && !error && categorizedPayments.length === 0 ? (
+                <div className="app__empty-state">
+                  <p className="app__empty-state-text">No loans found</p>
+                </div>
+              ) : (
+                !loading && (
                   <div>
                     {categorizedPayments.map((payment) => (
                       <LoanCard
@@ -71,15 +71,15 @@ function App() {
                       />
                     ))}
                   </div>
-                )}
-              </section>
-            </div>
-
-            <div className="app__sidebar">
-              <CalculatorCard />
-            </div>
+                )
+              )}
+            </section>
           </div>
-        )}
+
+          <div className="app__sidebar">
+            <CalculatorCard />
+          </div>
+        </div>
       </div>
 
       <AddPaymentModal

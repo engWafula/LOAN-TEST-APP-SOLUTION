@@ -1,3 +1,5 @@
+import { differenceInDays, parseISO, isValid } from 'date-fns';
+
 export type PaymentStatus = 'On Time' | 'Late' | 'Defaulted' | 'Unpaid';
 
 export interface CategorizedPayment {
@@ -31,11 +33,14 @@ export function categorizePayment(
     return 'Unpaid';
   }
 
-  const due = new Date(dueDate);
-  const payment = new Date(paymentDate);
+  const due = parseISO(dueDate);
+  const payment = parseISO(paymentDate);
   
-  const diffTime = payment.getTime() - due.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  if (!isValid(due) || !isValid(payment)) {
+    return 'Unpaid';
+  }
+
+  const diffDays = differenceInDays(payment, due);
 
   if (diffDays <= 5) {
     return 'On Time';

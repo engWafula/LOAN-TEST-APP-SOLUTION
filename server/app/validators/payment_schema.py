@@ -1,4 +1,5 @@
-from marshmallow import Schema, fields, validate
+from marshmallow import Schema, fields, validate, pre_load
+from app.utils.date_utils import parse_date
 
 
 class PaymentCreateSchema(Schema):
@@ -12,14 +13,29 @@ class PaymentCreateSchema(Schema):
     )
     
     payment_date = fields.Date(
-        required=True,
+        required=False,
         allow_none=True,
         format="%Y-%m-%d",
+        missing=None,
         error_messages={
-            "required": "payment_date is required",
             "invalid": "payment_date must be in YYYY-MM-DD format"
         }
     )
+    
+    @pre_load
+    def parse_payment_date(self, data, **kwargs):
+        """Pre-process payment_date to handle empty strings and None values."""
+        if 'payment_date' in data:
+            if data['payment_date'] == '' or data['payment_date'] is None:
+                data['payment_date'] = None
+            elif isinstance(data['payment_date'], str):
+                try:
+                    # Validate the date format using our utility
+                    parse_date(data['payment_date'])
+                except ValueError:
+                    # Let marshmallow handle the validation error
+                    pass
+        return data
     
     class Meta:
         strict = True

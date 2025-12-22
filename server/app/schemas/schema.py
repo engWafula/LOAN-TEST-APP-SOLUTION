@@ -1,5 +1,5 @@
 import graphene
-from app.services.loan_service import LoanService
+from app.services.service_factory import get_loan_service
 
 
 class PaginationInfo(graphene.ObjectType):
@@ -44,7 +44,7 @@ class LoanType(graphene.ObjectType):
         return loan.due_date.isoformat() if loan.due_date else None
     
     def resolve_loan_payments(self, info):
-        service = LoanService()
+        service = get_loan_service()
         payments, _ = service.get_payments_by_loan_id(self.id, page=1, page_size=1000)
         return payments
 
@@ -62,7 +62,7 @@ class Query(graphene.ObjectType):
     )
     
     def resolve_loans(self, info, page=1, page_size=0):
-        service = LoanService()
+        service = get_loan_service()
         
         if page_size == 0:
             loans, _ = service.get_all_loans(page=1, page_size=1000)
