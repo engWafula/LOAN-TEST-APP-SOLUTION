@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:2024';
+export const API_BASE_URL = 'http://localhost:2024';
 
 export interface AddPaymentRequest {
   loan_id: number;
