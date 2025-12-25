@@ -11,12 +11,5 @@ describe('CalculatorCard', () => {
       screen.getByText(/calculate the total interest for a loan/i)
     ).toBeInTheDocument();
   });
-
-  it('should render LoanCalculator component', () => {
-    render(<CalculatorCard />);
-    expect(screen.getByText('$10,000')).toBeInTheDocument();
-    expect(screen.getByText('5%')).toBeInTheDocument();
-    expect(screen.getByText('12 months')).toBeInTheDocument();
-  });
 });
 

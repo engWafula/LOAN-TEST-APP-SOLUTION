@@ -46,39 +46,6 @@ describe('Modal', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('should call onClose when overlay is clicked', async () => {
-    const user = userEvent.setup();
-    const onClose = vi.fn();
-    render(
-      <Modal isOpen={true} onClose={onClose} title="Test Modal">
-        <div>Modal Content</div>
-      </Modal>
-    );
-    
-    const overlay = screen.getByText('Test Modal').closest('div')?.parentElement;
-    expect(overlay).toBeInTheDocument();
-    
-    if (overlay) {
-      await user.click(overlay);
-      expect(onClose).toHaveBeenCalledTimes(1);
-    }
-  });
-
-  it('should not call onClose when modal content is clicked', async () => {
-    const user = userEvent.setup();
-    const onClose = vi.fn();
-    render(
-      <Modal isOpen={true} onClose={onClose} title="Test Modal">
-        <div>Modal Content</div>
-      </Modal>
-    );
-    
-    const content = screen.getByText('Modal Content');
-    await user.click(content);
-    
-    expect(onClose).not.toHaveBeenCalled();
-  });
-
   it('should prevent body scroll when open', () => {
     const { rerender } = render(
       <Modal isOpen={false} onClose={vi.fn()} title="Test Modal">

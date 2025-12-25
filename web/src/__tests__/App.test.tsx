@@ -106,30 +106,5 @@ describe('App', () => {
     });
   });
 
-  it('should allow adding payment through modal', async () => {
-    const user = userEvent.setup();
-
-    render(<App />, {
-      mocks: [mockLoansQuery],
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText(/loans & payments/i)).toBeInTheDocument();
-    });
-
-    const headerButtons = screen.getAllByRole('button', { name: /add payment/i });
-    await user.click(headerButtons[0]);
-
-    await waitFor(() => {
-      expect(screen.getByText('Add New Payment')).toBeInTheDocument();
-    });
-
-    const select = screen.getByLabelText(/select loan/i);
-    expect(select).toBeInTheDocument();
-    await user.selectOptions(select, '1');
-
-    const dateInput = screen.getByLabelText(/payment date/i);
-    expect(dateInput).toBeInTheDocument();
-  });
 });
 

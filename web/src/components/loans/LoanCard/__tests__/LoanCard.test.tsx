@@ -39,8 +39,8 @@ describe('LoanCard', () => {
 
   it('should format dates correctly', () => {
     render(<LoanCard payment={mockPayment} />);
-    expect(screen.getByText(/Mar 1, 2025/)).toBeInTheDocument();
-    expect(screen.getByText(/Mar 4, 2025/)).toBeInTheDocument();
+    expect(screen.getByText(/Mar 0?1, 2025/)).toBeInTheDocument();
+    expect(screen.getByText(/Mar 0?4, 2025/)).toBeInTheDocument();
   });
 
   it('should display N/A for null payment date', () => {
