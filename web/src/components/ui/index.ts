@@ -6,4 +6,9 @@ export { ErrorBoundary } from './ErrorBoundary';
 export { LoadingOverlay } from './LoadingOverlay';
 export { FormField } from './FormField';
 export { EmptyState } from './EmptyState';
+export { SubmitButton } from './SubmitButton';
+export { FormInput } from './FormInput';
+export type { FormInputProps } from './FormInput';
+export { FormSelect } from './FormSelect';
+export type { FormSelectProps, FormSelectOption } from './FormSelect';
 

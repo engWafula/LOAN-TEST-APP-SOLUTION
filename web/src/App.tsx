@@ -4,6 +4,7 @@ import { AddPaymentModal } from './components/payments/AddPaymentModal';
 import { Alert, AlertDescription, AlertTitle } from './components/ui/alert';
 import { LoadingOverlay } from './components/ui/LoadingOverlay';
 import { CalculatorCard } from './components/loans/CalculatorCard';
+import { Header } from './components/layout/Header';
 import { AlertCircle } from 'lucide-react';
 import { useLoans } from './hooks/useLoans';
 
@@ -17,6 +18,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Header onRefresh={refetch} isLoading={loading} />
       <div className="container mx-auto px-4 py-8 relative min-h-[400px]">
         <LoadingOverlay isLoading={loading} message="Loading loans and payments..." />
 

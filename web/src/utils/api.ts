@@ -3,6 +3,7 @@ const API_BASE_URL = 'http://localhost:2024';
 export interface AddPaymentRequest {
   loan_id: number;
   payment_date?: string;
+  amount?: number;
 }
 
 export interface AddPaymentResponse {

@@ -10,16 +10,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { FormInput } from '@/components/ui/FormInput';
+import { FormSelect } from '@/components/ui/FormSelect';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader } from '@/components/ui/loader';
+import { SubmitButton } from '@/components/ui/SubmitButton';
 import { FormField } from '@/components/ui/FormField';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
@@ -35,6 +29,7 @@ interface AddPaymentModalProps {
 export function AddPaymentModal({ isOpen, onClose, onPaymentAdded, loans }: AddPaymentModalProps) {
   const [loanId, setLoanId] = useState('');
   const [paymentDate, setPaymentDate] = useState('');
+  const [amount, setAmount] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -54,11 +49,13 @@ export function AddPaymentModal({ isOpen, onClose, onPaymentAdded, loans }: AddP
       await addPayment({
         loan_id: loanIdNum,
         payment_date: paymentDate || undefined,
+        amount: amount ? parseFloat(amount) : undefined,
       });
 
       setSuccess(true);
       setLoanId('');
       setPaymentDate('');
+      setAmount('');
 
       if (onPaymentAdded) {
         onPaymentAdded();
@@ -81,6 +78,7 @@ export function AddPaymentModal({ isOpen, onClose, onPaymentAdded, loans }: AddP
       setSuccess(false);
       setLoanId('');
       setPaymentDate('');
+      setAmount('');
       onClose();
     }
   };
@@ -119,31 +117,39 @@ export function AddPaymentModal({ isOpen, onClose, onPaymentAdded, loans }: AddP
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <FormField label="Select Loan" htmlFor="loan-select" required>
-              <Select
+              <FormSelect
+                id="loan-select"
                 value={loanId}
                 onValueChange={setLoanId}
                 disabled={isSubmitting}
                 required
-              >
-                <SelectTrigger id="loan-select">
-                  <SelectValue placeholder="-- Select a loan --" />
-                </SelectTrigger>
-                <SelectContent>
-                  {loans.map((loan) => (
-                    <SelectItem key={loan.id} value={loan.id.toString()}>
-                      {loan.name} (ID: {loan.id}) - {formatCurrency(loan.principal)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                placeholder="-- Select a loan --"
+                options={loans.map((loan) => ({
+                  value: loan.id.toString(),
+                  label: `${loan.name} (ID: ${loan.id}) - ${formatCurrency(loan.principal)}`,
+                }))}
+              />
             </FormField>
 
             <FormField label="Payment Date" htmlFor="payment-date" optional>
-              <Input
+              <FormInput
                 id="payment-date"
                 type="date"
                 value={paymentDate}
                 onChange={(e) => setPaymentDate(e.target.value)}
+                disabled={isSubmitting}
+              />
+            </FormField>
+
+            <FormField label="Amount" htmlFor="amount" optional>
+              <FormInput
+                id="amount"
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
                 disabled={isSubmitting}
               />
             </FormField>
@@ -157,16 +163,13 @@ export function AddPaymentModal({ isOpen, onClose, onPaymentAdded, loans }: AddP
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <>
-                    <Loader size="sm" className="mr-2" />
-                    Adding...
-                  </>
-                ) : (
-                  'Add Payment'
-                )}
-              </Button>
+              <SubmitButton
+                type="submit"
+                loading={isSubmitting}
+                loadingText="Adding..."
+              >
+                Add Payment
+              </SubmitButton>
             </DialogFooter>
           </form>
         )}

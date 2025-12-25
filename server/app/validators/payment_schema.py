@@ -22,6 +22,17 @@ class PaymentCreateSchema(Schema):
         }
     )
     
+    amount = fields.Float(
+        required=False,
+        allow_none=True,
+        missing=None,
+        validate=validate.Range(min=0),
+        error_messages={
+            "invalid": "amount must be a valid number",
+            "validator_failed": "amount must be greater than or equal to 0"
+        }
+    )
+    
     @pre_load
     def parse_payment_date(self, data, **kwargs):
         """Pre-process payment_date to handle empty strings and None values."""
