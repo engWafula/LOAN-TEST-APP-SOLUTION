@@ -2,11 +2,9 @@
 Date utility functions for consistent date handling across the application.
 """
 import datetime
-from typing import Optional
-from pytz import UTC
 
 
-def parse_date(date_string: Optional[str]) -> Optional[datetime.date]:
+def parse_date(date_string):
     if date_string is None:
         return None
     
