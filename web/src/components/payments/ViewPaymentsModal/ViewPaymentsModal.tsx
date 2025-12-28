@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react';
 import { LoanData } from '../../../utils/paymentStatus';
 import { categorizePayment, PaymentStatus } from '../../../utils/paymentStatus';
 import { PaymentStatus as PaymentStatusComponent } from '@/components/ui/PaymentStatus';
@@ -10,15 +11,17 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/lib/formatters';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { EmptyState } from '@/components/ui/EmptyState';
+import { DataTable } from '../../loans/LoansTable/DataTable';
+import { ColumnDef, SortState } from '../../loans/LoansTable/types';
+import { sortData, toggleSort } from '../../loans/LoansTable/utils';
+
+interface PaymentWithStatus {
+  id: number;
+  loanId: number;
+  paymentDate: string | null;
+  status: PaymentStatus;
+  dueDate: string;
+}
 
 interface ViewPaymentsModalProps {
   isOpen: boolean;
@@ -27,13 +30,73 @@ interface ViewPaymentsModalProps {
 }
 
 export function ViewPaymentsModal({ isOpen, onClose, loan }: ViewPaymentsModalProps) {
-  if (!loan) return null;
+  const [sortState, setSortState] = useState<SortState>({
+    field: null,
+    direction: null,
+  });
 
-  const payments = loan.loanPayments?.filter((p) => p !== null) || [];
-  const categorizedPayments = payments.map((payment) => ({
-    ...payment,
-    status: categorizePayment(loan.dueDate, payment.paymentDate) as PaymentStatus,
-  }));
+  const columns: ColumnDef<PaymentWithStatus>[] = useMemo(
+    () => [
+      {
+        id: 'id',
+        header: 'Payment ID',
+        accessor: (row) => row.id,
+        sortable: true,
+        className: 'font-medium',
+      },
+      {
+        id: 'paymentDate',
+        header: 'Payment Date',
+        accessor: (row) => row.paymentDate,
+        cell: (value) => (value ? formatDate(value as string) : 'N/A'),
+        sortable: true,
+      },
+      {
+        id: 'dueDate',
+        header: 'Due Date',
+        accessor: (row) => row.dueDate,
+        cell: (value) => formatDate(value as string),
+        sortable: true,
+      },
+      {
+        id: 'status',
+        header: 'Status',
+        accessor: (row) => row.status,
+        cell: (value) => <PaymentStatusComponent status={value as PaymentStatus} />,
+        sortable: true,
+        align: 'center',
+      },
+    ],
+    []
+  );
+
+  const handleSort = (field: string) => {
+    const newSortState = toggleSort(sortState, field);
+    setSortState(newSortState);
+  };
+
+  const getColumnAccessor = (field: string) => {
+    const column = columns.find((col) => col.id === field);
+    return column?.accessor || (() => null);
+  };
+
+  const payments = loan?.loanPayments?.filter((p) => p !== null) || [];
+  const categorizedPayments: PaymentWithStatus[] = useMemo(() => {
+    if (!loan) return [];
+    return payments.map((payment) => ({
+      ...payment,
+      status: categorizePayment(loan.dueDate, payment.paymentDate) as PaymentStatus,
+      dueDate: loan.dueDate,
+    }));
+  }, [loan, payments]);
+
+  const sortedData = useMemo(() => {
+    if (!sortState.field || categorizedPayments.length === 0) return categorizedPayments;
+    const accessor = getColumnAccessor(sortState.field);
+    return sortData(categorizedPayments, sortState, accessor);
+  }, [categorizedPayments, sortState, columns]);
+
+  if (!loan) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -45,39 +108,17 @@ export function ViewPaymentsModal({ isOpen, onClose, loan }: ViewPaymentsModalPr
           </DialogDescription>
         </DialogHeader>
 
-        {categorizedPayments.length === 0 ? (
-          <EmptyState
-            title="No payments found"
-            description="This loan has no payments recorded yet."
+        <div className="mt-4">
+          <DataTable
+            data={sortedData}
+            columns={columns}
+            sortState={sortState}
+            onSort={handleSort}
+            getRowId={(row) => row.id}
+            emptyTitle="No payments found"
+            emptyDescription="This loan has no payments recorded yet."
           />
-        ) : (
-          <div className="mt-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Payment ID</TableHead>
-                  <TableHead>Payment Date</TableHead>
-                  <TableHead>Due Date</TableHead>
-                  <TableHead className="text-center">Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {categorizedPayments.map((payment) => (
-                  <TableRow key={payment.id}>
-                    <TableCell className="font-medium">{payment.id}</TableCell>
-                    <TableCell>
-                      {payment.paymentDate ? formatDate(payment.paymentDate) : 'N/A'}
-                    </TableCell>
-                    <TableCell>{formatDate(loan.dueDate)}</TableCell>
-                    <TableCell className="text-center">
-                      <PaymentStatusComponent status={payment.status} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )}
+        </div>
 
         <div className="flex justify-end mt-6">
           <Button variant="outline" onClick={onClose}>
