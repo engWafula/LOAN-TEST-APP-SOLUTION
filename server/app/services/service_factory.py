@@ -1,4 +1,3 @@
-"""Service factory for dependency injection."""
 from typing import Optional
 from app.services.loan_service import LoanService
 from app.repositories.loan_repository import LoanRepository
@@ -34,7 +33,6 @@ def get_loan_service(
 
 
 def reset_repositories():
-    """Reset shared repository instances. Useful for testing."""
     global _loan_repository, _payment_repository
     _loan_repository = None
     _payment_repository = None

@@ -14,10 +14,10 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n  query GetLoans($page: Int, $pageSize: Int) {\n    loans(page: $page, pageSize: $pageSize) {\n      loans {\n        id\n        name\n        interestRate\n        principal\n        dueDate\n        loanPayments {\n          id\n          loanId\n          paymentDate\n        }\n      }\n      pagination {\n        page\n        pageSize\n        total\n        totalPages\n        hasNext\n        hasPrev\n      }\n    }\n  }\n": typeof types.GetLoansDocument,
+    "\n  query GetLoans {\n    loans {\n      id\n      name\n      interestRate\n      principal\n      dueDate\n      loanPayments {\n        id\n        loanId\n        paymentDate\n      }\n    }\n  }\n": typeof types.GetLoansDocument,
 };
 const documents: Documents = {
-    "\n  query GetLoans($page: Int, $pageSize: Int) {\n    loans(page: $page, pageSize: $pageSize) {\n      loans {\n        id\n        name\n        interestRate\n        principal\n        dueDate\n        loanPayments {\n          id\n          loanId\n          paymentDate\n        }\n      }\n      pagination {\n        page\n        pageSize\n        total\n        totalPages\n        hasNext\n        hasPrev\n      }\n    }\n  }\n": types.GetLoansDocument,
+    "\n  query GetLoans {\n    loans {\n      id\n      name\n      interestRate\n      principal\n      dueDate\n      loanPayments {\n        id\n        loanId\n        paymentDate\n      }\n    }\n  }\n": types.GetLoansDocument,
 };
 
 /**
@@ -37,7 +37,7 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query GetLoans($page: Int, $pageSize: Int) {\n    loans(page: $page, pageSize: $pageSize) {\n      loans {\n        id\n        name\n        interestRate\n        principal\n        dueDate\n        loanPayments {\n          id\n          loanId\n          paymentDate\n        }\n      }\n      pagination {\n        page\n        pageSize\n        total\n        totalPages\n        hasNext\n        hasPrev\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetLoans($page: Int, $pageSize: Int) {\n    loans(page: $page, pageSize: $pageSize) {\n      loans {\n        id\n        name\n        interestRate\n        principal\n        dueDate\n        loanPayments {\n          id\n          loanId\n          paymentDate\n        }\n      }\n      pagination {\n        page\n        pageSize\n        total\n        totalPages\n        hasNext\n        hasPrev\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query GetLoans {\n    loans {\n      id\n      name\n      interestRate\n      principal\n      dueDate\n      loanPayments {\n        id\n        loanId\n        paymentDate\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetLoans {\n    loans {\n      id\n      name\n      interestRate\n      principal\n      dueDate\n      loanPayments {\n        id\n        loanId\n        paymentDate\n      }\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

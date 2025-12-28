@@ -19,10 +19,12 @@ describe('App', () => {
 
   it('should render loading state initially', async () => {
     render(<App />, {
-      mocks: [],
+      mocks: [mockLoansQuery],
     });
     expect(screen.getByText(/loading loans and payments/i)).toBeInTheDocument();
-    await waitFor(() => {}, { timeout: 100 });
+    await waitFor(() => {
+      expect(screen.queryByText(/loading loans and payments/i)).not.toBeInTheDocument();
+    });
   });
 
   it('should render loans and payments when data loads', async () => {
@@ -31,7 +33,7 @@ describe('App', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText(/loans & payments/i)).toBeInTheDocument();
+      expect(screen.getByText(/^Loans$/)).toBeInTheDocument();
     });
 
     expect(screen.getByText("Tom's Loan")).toBeInTheDocument();
@@ -56,7 +58,7 @@ describe('App', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText(/loans & payments/i)).toBeInTheDocument();
+      expect(screen.getByText(/^Loans$/)).toBeInTheDocument();
     });
 
     const addButton = screen.getByRole('button', { name: /add payment/i });
@@ -67,34 +69,6 @@ describe('App', () => {
     });
   });
 
-  it('should display empty state when no loans', async () => {
-    const emptyQuery = {
-      request: mockLoansQuery.request,
-      result: {
-        data: {
-          loans: {
-            loans: [],
-            pagination: {
-              page: 1,
-              pageSize: 0,
-              total: 0,
-              totalPages: 0,
-              hasNext: false,
-              hasPrev: false,
-            },
-          },
-        },
-      },
-    };
-
-    render(<App />, {
-      mocks: [emptyQuery],
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('No loans found')).toBeInTheDocument();
-    });
-  });
 
   it('should display calculator in sidebar', async () => {
     render(<App />, {

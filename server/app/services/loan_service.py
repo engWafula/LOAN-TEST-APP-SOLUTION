@@ -1,6 +1,6 @@
 """Business logic service for loan operations."""
 import datetime
-from typing import List, Optional, Tuple
+from typing import List, Optional
 from app.models.loan import Loan, LoanPayment
 from app.repositories.loan_repository import LoanRepository
 from app.repositories.payment_repository import PaymentRepository
@@ -17,23 +17,16 @@ class LoanService:
         self._loan_repository = loan_repository or LoanRepository()
         self._payment_repository = payment_repository or PaymentRepository()
     
-    def get_all_loans(self, page: int = 1, page_size: int = 10) -> Tuple[List[Loan], dict]:
-        return self._loan_repository.get_paginated(page=page, page_size=page_size)
+    def get_all_loans(self) -> List[Loan]:
+        """Get all loans."""
+        return self._loan_repository.get_all()
     
     def get_loan_by_id(self, loan_id: int) -> Optional[Loan]:
         return self._loan_repository.get_by_id(loan_id)
     
-    def get_payments_by_loan_id(
-        self, 
-        loan_id: int, 
-        page: int = 1, 
-        page_size: int = 10
-    ) -> Tuple[List[LoanPayment], dict]:
-        return self._payment_repository.get_paginated_by_loan_id(
-            loan_id=loan_id,
-            page=page,
-            page_size=page_size
-        )
+    def get_all_payments_by_loan_id(self, loan_id: int) -> List[LoanPayment]:
+        """Get all payments for a loan."""
+        return self._payment_repository.get_by_loan_id(loan_id)
     
     def add_payment(
         self, 

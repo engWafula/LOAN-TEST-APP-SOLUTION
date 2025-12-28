@@ -2,15 +2,6 @@ import graphene
 from app.services.service_factory import get_loan_service
 
 
-class PaginationInfo(graphene.ObjectType):
-    page = graphene.Int(required=True)
-    page_size = graphene.Int(required=True)
-    total = graphene.Int(required=True)
-    total_pages = graphene.Int(required=True)
-    has_next = graphene.Boolean(required=True)
-    has_prev = graphene.Boolean(required=True)
-
-
 class LoanPaymentType(graphene.ObjectType):
     id = graphene.Int(required=True)
     loan_id = graphene.Int(required=True)
@@ -45,50 +36,17 @@ class LoanType(graphene.ObjectType):
     
     def resolve_loan_payments(self, info):
         service = get_loan_service()
-        payments, _ = service.get_payments_by_loan_id(self.id, page=1, page_size=1000)
+        payments = service.get_all_payments_by_loan_id(self.id)
         return payments
 
 
-class LoanConnection(graphene.ObjectType):
-    loans = graphene.List(LoanType, required=True)
-    pagination = graphene.Field(PaginationInfo, required=True)
-
-
 class Query(graphene.ObjectType):
-    loans = graphene.Field(
-        LoanConnection,
-        page=graphene.Int(default_value=1),
-        page_size=graphene.Int(default_value=0)
-    )
+    loans = graphene.List(LoanType, required=True)
     
-    def resolve_loans(self, info, page=1, page_size=0):
+    def resolve_loans(self, info):
         service = get_loan_service()
-        
-        if page_size == 0:
-            loans, _ = service.get_all_loans(page=1, page_size=1000)
-            total = len(loans)
-            pagination = {
-                "page": 1,
-                "page_size": total,
-                "total": total,
-                "total_pages": 1,
-                "has_next": False,
-                "has_prev": False
-            }
-        else:
-            if page < 1:
-                page = 1
-            if page_size < 1:
-                page_size = 10
-            if page_size > 100:
-                page_size = 100
-            
-            loans, pagination = service.get_all_loans(page=page, page_size=page_size)
-        
-        return LoanConnection(
-            loans=loans,
-            pagination=PaginationInfo(**pagination)
-        )
+        loans = service.get_all_loans()
+        return loans
     
 
 

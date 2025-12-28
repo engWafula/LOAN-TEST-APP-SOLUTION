@@ -1,19 +1,28 @@
 import { useState } from 'react';
 import { LoansTable } from './components/loans/LoansTable';
 import { AddPaymentModal } from './components/payments/AddPaymentModal';
+import { ViewPaymentsModal } from './components/payments/ViewPaymentsModal';
 import { Alert, AlertDescription, AlertTitle } from './components/ui/alert';
 import { LoadingOverlay } from './components/ui/LoadingOverlay';
 import { CalculatorCard } from './components/loans/CalculatorCard';
 import { Header } from './components/layout/Header';
 import { AlertCircle } from 'lucide-react';
 import { useLoans } from './hooks/useLoans';
+import { LoanData } from './utils/paymentStatus';
 
 function App() {
   const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
-  const { categorizedPayments, uniqueLoans, loading, error, refetch } = useLoans();
+  const [isViewPaymentsModalOpen, setIsViewPaymentsModalOpen] = useState(false);
+  const [selectedLoan, setSelectedLoan] = useState<LoanData | null>(null);
+  const { loans, loading, error, refetch } = useLoans();
 
   const handlePaymentAdded = () => {
     refetch();
+  };
+
+  const handleViewPayments = (loan: LoanData) => {
+    setSelectedLoan(loan);
+    setIsViewPaymentsModalOpen(true);
   };
 
   return (
@@ -42,9 +51,9 @@ function App() {
           <div>
             {!loading && !error && (
               <LoansTable
-                payments={categorizedPayments}
-                itemsPerPage={20}
+                loans={loans}
                 onAddPaymentClick={() => setIsAddPaymentModalOpen(true)}
+                onViewPayments={handleViewPayments}
               />
             )}
           </div>
@@ -59,7 +68,16 @@ function App() {
         isOpen={isAddPaymentModalOpen}
         onClose={() => setIsAddPaymentModalOpen(false)}
         onPaymentAdded={handlePaymentAdded}
-        loans={uniqueLoans}
+        loans={loans}
+      />
+
+      <ViewPaymentsModal
+        isOpen={isViewPaymentsModalOpen}
+        onClose={() => {
+          setIsViewPaymentsModalOpen(false);
+          setSelectedLoan(null);
+        }}
+        loan={selectedLoan}
       />
     </div>
   );

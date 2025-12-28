@@ -1,9 +1,39 @@
 import { LoansTableColumn } from './types';
-import { CategorizedPayment } from '../../../utils/paymentStatus';
-import { PaymentStatus } from '../../ui/PaymentStatus';
+import { LoanData, categorizePayment, PaymentStatus } from '../../../utils/paymentStatus';
 import { formatCurrency, formatDate } from '@/lib/formatters';
+import { Button } from '@/components/ui/button';
+import { PaymentStatus as PaymentStatusComponent } from '@/components/ui/PaymentStatus';
+import { Eye } from 'lucide-react';
 
-export const loansTableColumns: LoansTableColumn[] = [
+/**
+ * Gets the payment status for a loan based on its most recent payment
+ */
+function getLoanStatus(loan: LoanData): PaymentStatus {
+  const payments = loan.loanPayments?.filter((p): p is NonNullable<typeof p> => p !== null) || [];
+  
+  if (payments.length === 0) {
+    return 'Unpaid';
+  }
+  
+  // Find the most recent payment (by paymentDate, excluding nulls)
+  const validPayments = payments.filter(p => p.paymentDate !== null);
+  if (validPayments.length === 0) {
+    return 'Unpaid';
+  }
+  
+  // Sort by paymentDate descending to get the most recent
+  const sortedPayments = [...validPayments].sort((a, b) => {
+    if (!a.paymentDate || !b.paymentDate) return 0;
+    return new Date(b.paymentDate).getTime() - new Date(a.paymentDate).getTime();
+  });
+  
+  const mostRecentPayment = sortedPayments[0];
+  return categorizePayment(loan.dueDate, mostRecentPayment.paymentDate);
+}
+
+export const createLoansTableColumns = (
+  onViewPayments?: (loan: LoanData) => void
+): LoansTableColumn[] => [
   {
     id: 'name',
     header: 'Loan Name',
@@ -43,18 +73,42 @@ export const loansTableColumns: LoansTableColumn[] = [
     sortable: true,
   },
   {
-    id: 'paymentDate',
-    header: 'Payment Date',
-    accessor: (row) => row.paymentDate,
-    cell: (value) => formatDate(value as string | null),
-    sortable: true,
-  },
-  {
     id: 'status',
     header: 'Status',
-    accessor: (row) => row.status,
-    cell: (value) => <PaymentStatus status={value as CategorizedPayment['status']} />,
+    accessor: (row) => getLoanStatus(row),
+    cell: (value) => <PaymentStatusComponent status={value as PaymentStatus} />,
     sortable: true,
     align: 'center',
   },
+  {
+    id: 'actions',
+    header: 'Actions',
+    accessor: () => null,
+    cell: (_, row) => {
+      const loan = row as LoanData;
+      return (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            if (onViewPayments) {
+              onViewPayments(loan);
+            } else {
+              const event = new CustomEvent('viewPayments', { detail: { loan } });
+              window.dispatchEvent(event);
+            }
+          }}
+          className="flex items-center gap-2"
+        >
+          <Eye className="h-4 w-4" />
+          View Payments
+        </Button>
+      );
+    },
+    sortable: false,
+    align: 'center',
+  },
 ];
+
+// Default export for backward compatibility
+export const loansTableColumns = createLoansTableColumns();

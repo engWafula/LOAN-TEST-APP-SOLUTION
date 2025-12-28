@@ -1,0 +1,3 @@
+export { ViewPaymentsModal } from './ViewPaymentsModal';
+
+

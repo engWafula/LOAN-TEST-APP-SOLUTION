@@ -12,7 +12,7 @@ class TestLoanService:
     def test_get_all_loans(self):
         """Test getting all loans."""
         service = LoanService()
-        loans, _ = service.get_all_loans(page=1, page_size=1000)
+        loans = service.get_all_loans()
         
         assert len(loans) == 4
         assert all(hasattr(loan, "id") for loan in loans)
@@ -34,25 +34,25 @@ class TestLoanService:
         
         assert loan is None
     
-    def test_get_payments_by_loan_id(self):
+    def test_get_all_payments_by_loan_id(self):
         """Test getting payments for a specific loan."""
         service = LoanService()
-        payments, _ = service.get_payments_by_loan_id(1, page=1, page_size=1000)
+        payments = service.get_all_payments_by_loan_id(1)
         
         assert len(payments) == 1
         assert payments[0].loan_id == 1
     
-    def test_get_payments_by_loan_id_no_payments(self):
+    def test_get_all_payments_by_loan_id_no_payments(self):
         """Test getting payments for a loan with no payments."""
         service = LoanService()
-        payments, _ = service.get_payments_by_loan_id(4, page=1, page_size=1000)
+        payments = service.get_all_payments_by_loan_id(4)
         
         assert len(payments) == 0
     
     def test_add_payment_success(self):
         """Test adding a payment successfully."""
         service = LoanService()
-        payments_before, _ = service.get_payments_by_loan_id(1, page=1, page_size=1000)
+        payments_before = service.get_all_payments_by_loan_id(1)
         initial_count = len(payments_before)
         
         payment = service.add_payment(
@@ -65,7 +65,7 @@ class TestLoanService:
         assert payment.payment_date == datetime.date(2025, 3, 10)
         
         # Verify payment was added
-        payments_after, _ = service.get_payments_by_loan_id(1, page=1, page_size=1000)
+        payments_after = service.get_all_payments_by_loan_id(1)
         assert len(payments_after) == initial_count + 1
     
     def test_add_payment_without_date(self):

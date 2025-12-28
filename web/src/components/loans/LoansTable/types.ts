@@ -1,4 +1,4 @@
-import { CategorizedPayment } from '../../../utils/paymentStatus';
+import { LoanData } from '../../../utils/paymentStatus';
 import { ReactNode } from 'react';
 
 export type SortDirection = 'asc' | 'desc' | null;
@@ -24,5 +24,5 @@ export interface PaginationState {
   pageSize: number;
 }
 
-export type LoansTableColumn = ColumnDef<CategorizedPayment>;
+export type LoansTableColumn = ColumnDef<LoanData>;
 
