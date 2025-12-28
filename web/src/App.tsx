@@ -17,7 +17,7 @@ function App() {
   const { loans, loading, error, refetch } = useLoans();
 
   const handlePaymentAdded = () => {
-    refetch();
+    void refetch();
   };
 
   const handleViewPayments = (loan: LoanData) => {
@@ -27,7 +27,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header onRefresh={refetch} isLoading={loading} />
+      <Header onRefresh={() => void refetch()} isLoading={loading} />
       <div className="container mx-auto px-4 py-8 relative min-h-[400px]">
         <LoadingOverlay isLoading={loading} message="Loading loans and payments..." />
 
@@ -38,7 +38,7 @@ function App() {
             <AlertDescription>
               {error.message}
               <button
-                onClick={() => refetch()}
+                onClick={() => void refetch()}
                 className="ml-2 underline hover:no-underline"
               >
                 Retry

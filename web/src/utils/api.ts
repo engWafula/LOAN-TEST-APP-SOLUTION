@@ -32,10 +32,10 @@ export async function addPayment(
   });
 
   if (!response.ok) {
-    const error: ApiError = await response.json();
+    const error: ApiError = await response.json() as ApiError;
     throw new Error(error.error || 'Failed to add payment');
   }
 
-  return response.json();
+  return response.json() as Promise<AddPaymentResponse>;
 }
 

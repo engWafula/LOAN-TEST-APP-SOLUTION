@@ -35,7 +35,7 @@ export const createLoansTableColumns = (
     id: 'interestRate',
     header: 'Interest Rate',
     accessor: (row) => row.interestRate,
-    cell: (value) => `${value}%`,
+    cell: (value) => `${String(value)}%`,
     sortable: true,
     align: 'right',
   },
@@ -58,17 +58,19 @@ export const createLoansTableColumns = (
     id: 'actions',
     header: 'Actions',
     accessor: () => null,
-    cell: (_, row) => (
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onViewPayments?.(row as LoanData)}
-        className="flex items-center gap-2"
-      >
-        <Eye className="h-4 w-4" />
-        View Payments
-      </Button>
-    ),
+    cell: (_, row) => {
+      return (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onViewPayments?.(row)}
+          className="flex items-center gap-2"
+        >
+          <Eye className="h-4 w-4" />
+          View Payments
+        </Button>
+      );
+    },
     sortable: false,
     align: 'center',
   },

@@ -17,8 +17,8 @@ describe('FormInput', () => {
 
   it('should render with value', () => {
     render(<FormInput value="Test value" onChange={vi.fn()} />);
-    const input = screen.getByDisplayValue('Test value') as HTMLInputElement;
-    expect(input.value).toBe('Test value');
+    const input = screen.getByDisplayValue('Test value');
+    expect(input).toHaveValue('Test value');
   });
 
   it('should be disabled when disabled prop is true', () => {
@@ -35,16 +35,16 @@ describe('FormInput', () => {
 
   it('should have correct type attribute', () => {
     const { rerender } = render(<FormInput type="text" />);
-    let input = screen.getByRole('textbox') as HTMLInputElement;
-    expect(input.type).toBe('text');
+    let input = screen.getByRole('textbox');
+    expect(input).toHaveAttribute('type', 'text');
 
     rerender(<FormInput type="email" />);
-    input = screen.getByRole('textbox') as HTMLInputElement;
-    expect(input.type).toBe('email');
+    input = screen.getByRole('textbox');
+    expect(input).toHaveAttribute('type', 'email');
 
     rerender(<FormInput type="password" data-testid="password-input" />);
-    input = screen.getByTestId('password-input') as HTMLInputElement;
-    expect(input.type).toBe('password');
+    input = screen.getByTestId('password-input');
+    expect(input).toHaveAttribute('type', 'password');
   });
 
   it('should call onChange when value changes', async () => {
@@ -62,17 +62,17 @@ describe('FormInput', () => {
 
   it('should support number input type', () => {
     render(<FormInput type="number" step="0.01" min="0" />);
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
-    expect(input.type).toBe('number');
-    expect(input.step).toBe('0.01');
-    expect(input.min).toBe('0');
+    const input = screen.getByRole('spinbutton');
+    expect(input).toHaveAttribute('type', 'number');
+    expect(input).toHaveAttribute('step', '0.01');
+    expect(input).toHaveAttribute('min', '0');
   });
 
   it('should support date input type', () => {
     render(<FormInput type="date" />);
-    const input = document.querySelector('input[type="date"]') as HTMLInputElement;
+    const input = document.querySelector('input[type="date"]');
     expect(input).toBeInTheDocument();
-    expect(input.type).toBe('date');
+    expect(input).toHaveAttribute('type', 'date');
   });
 
 });

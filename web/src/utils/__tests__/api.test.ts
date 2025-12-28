@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { addPayment, type AddPaymentRequest } from '../api';
+import { addPayment, type AddPaymentRequest, type AddPaymentResponse } from '../api';
 
 describe('addPayment', () => {
   beforeEach(() => {
@@ -11,7 +11,7 @@ describe('addPayment', () => {
   });
 
   it('should successfully add a payment', async () => {
-    const mockResponse = {
+    const mockResponse: AddPaymentResponse = {
       message: 'Payment added successfully',
       payment: {
         id: 1,
@@ -20,10 +20,10 @@ describe('addPayment', () => {
       },
     };
 
-    (global.fetch as any).mockResolvedValueOnce({
+    vi.mocked(global.fetch).mockResolvedValueOnce({
       ok: true,
-      json: async () => mockResponse,
-    });
+      json: (): Promise<AddPaymentResponse> => Promise.resolve(mockResponse),
+    } as Response);
 
     const request: AddPaymentRequest = {
       loan_id: 1,
@@ -46,7 +46,7 @@ describe('addPayment', () => {
   });
 
   it('should add payment without date', async () => {
-    const mockResponse = {
+    const mockResponse: AddPaymentResponse = {
       message: 'Payment added successfully',
       payment: {
         id: 2,
@@ -55,10 +55,10 @@ describe('addPayment', () => {
       },
     };
 
-    (global.fetch as any).mockResolvedValueOnce({
+    vi.mocked(global.fetch).mockResolvedValueOnce({
       ok: true,
-      json: async () => mockResponse,
-    });
+      json: (): Promise<AddPaymentResponse> => Promise.resolve(mockResponse),
+    } as Response);
 
     const request: AddPaymentRequest = {
       loan_id: 1,
@@ -74,10 +74,10 @@ describe('addPayment', () => {
       error: 'Loan with id 999 does not exist',
     };
 
-    (global.fetch as any).mockResolvedValueOnce({
+    vi.mocked(global.fetch).mockResolvedValueOnce({
       ok: false,
-      json: async () => mockError,
-    });
+      json: (): Promise<{ error: string }> => Promise.resolve(mockError),
+    } as Response);
 
     const request: AddPaymentRequest = {
       loan_id: 999,
@@ -89,10 +89,10 @@ describe('addPayment', () => {
   });
 
   it('should throw generic error when error message is missing', async () => {
-    (global.fetch as any).mockResolvedValueOnce({
+    vi.mocked(global.fetch).mockResolvedValueOnce({
       ok: false,
-      json: async () => ({}),
-    });
+      json: (): Promise<Record<string, unknown>> => Promise.resolve({}),
+    } as Response);
 
     const request: AddPaymentRequest = {
       loan_id: 1,
@@ -102,7 +102,7 @@ describe('addPayment', () => {
   });
 
   it('should handle network errors', async () => {
-    (global.fetch as any).mockRejectedValueOnce(new Error('Network error'));
+    vi.mocked(global.fetch).mockRejectedValueOnce(new Error('Network error'));
 
     const request: AddPaymentRequest = {
       loan_id: 1,

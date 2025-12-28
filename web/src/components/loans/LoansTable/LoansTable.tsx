@@ -30,16 +30,11 @@ export function LoansTable({ loans, onAddPaymentClick, onViewPayments }: LoansTa
     setSortState(newSortState);
   };
 
-  // Find the column definition for sorting
-  const getColumnAccessor = (field: string) => {
-    const column = columns.find((col) => col.id === field);
-    return column?.accessor || (() => null);
-  };
-
   // Sort data
   const sortedData = useMemo(() => {
     if (!sortState.field) return loans;
-    const accessor = getColumnAccessor(sortState.field);
+    const column = columns.find((col) => col.id === sortState.field);
+    const accessor = column?.accessor || (() => null);
     return sortData(loans, sortState, accessor);
   }, [loans, sortState, columns]);
 

@@ -53,22 +53,25 @@ export function ViewPaymentsModal({ isOpen, onClose, loan }: ViewPaymentsModalPr
         id: 'status',
         header: 'Status',
         accessor: (row) => row.status,
-        cell: (value) => <PaymentStatusComponent status={value as PaymentStatus} />,
+        cell: (value) => {
+          const status = value as PaymentStatus;
+          return <PaymentStatusComponent status={status} />;
+        },
         align: 'center',
       },
     ],
     []
   );
 
-  const payments = loan?.loanPayments?.filter((p) => p !== null) || [];
   const categorizedPayments: PaymentWithStatus[] = useMemo(() => {
     if (!loan) return [];
+    const payments = loan.loanPayments?.filter((p) => p !== null) || [];
     return payments.map((payment) => ({
       ...payment,
-      status: categorizePayment(loan.dueDate, payment.paymentDate) as PaymentStatus,
+      status: categorizePayment(loan.dueDate, payment.paymentDate),
       dueDate: loan.dueDate,
     }));
-  }, [loan, payments]);
+  }, [loan]);
 
   if (!loan) return null;
 

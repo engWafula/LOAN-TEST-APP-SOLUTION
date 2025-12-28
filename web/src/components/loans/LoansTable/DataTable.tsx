@@ -91,7 +91,13 @@ export function DataTable<T>({
             <TableRow key={getRowId(row)}>
               {columns.map((column) => {
                 const value = column.accessor(row);
-                const cellContent = column.cell ? column.cell(value, row) : String(value ?? '');
+                const cellContent = column.cell 
+                  ? column.cell(value, row) 
+                  : value === null || value === undefined 
+                    ? '' 
+                    : typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
+                      ? String(value)
+                      : '';
 
                 return (
                   <TableCell

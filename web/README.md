@@ -7,6 +7,50 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
+## Running Linters
+
+This project uses ESLint with type-aware linting enabled for production-grade code quality.
+
+### Run ESLint
+
+```bash
+# Run linter on all files
+npm run lint
+
+# Run linter with auto-fix for fixable issues
+npm run lint -- --fix
+```
+
+### Linting Configuration
+
+The project uses **type-aware linting** which provides:
+- Type safety checks using TypeScript type information
+- Detection of type-related bugs
+- Stricter validation for production code
+- Better null/undefined handling
+
+The ESLint configuration is located in `eslint.config.js` and uses:
+- `typescript-eslint` with `recommendedTypeChecked` rules
+- React hooks linting
+- React refresh rules
+
+### Common Linting Issues
+
+If you encounter linting errors:
+1. **Floating Promises**: Use `void` operator for promises that don't need to be awaited
+   ```typescript
+   void refetch(); // Instead of: refetch();
+   ```
+
+2. **Type Assertions**: Remove unnecessary type assertions when TypeScript can infer types
+
+3. **Unsafe Any**: Use proper types instead of `any` for better type safety
+
+4. **Auto-fix**: Many issues can be automatically fixed:
+   ```bash
+   npm run lint -- --fix
+   ```
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:

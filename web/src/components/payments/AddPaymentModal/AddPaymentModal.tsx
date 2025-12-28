@@ -126,7 +126,10 @@ export function AddPaymentModal({ isOpen, onClose, onPaymentAdded, loans }: AddP
             description="There are no loans available to add payments to."
           />
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            void handleSubmit(onSubmit)(e);
+          }} className="space-y-4">
             <FormField
               label="Select Loan"
               htmlFor="loan_id"
