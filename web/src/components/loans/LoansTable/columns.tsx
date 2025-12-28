@@ -58,27 +58,17 @@ export const createLoansTableColumns = (
     id: 'actions',
     header: 'Actions',
     accessor: () => null,
-    cell: (_, row) => {
-      const loan = row as LoanData;
-      return (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            if (onViewPayments) {
-              onViewPayments(loan);
-            } else {
-              const event = new CustomEvent('viewPayments', { detail: { loan } });
-              window.dispatchEvent(event);
-            }
-          }}
-          className="flex items-center gap-2"
-        >
-          <Eye className="h-4 w-4" />
-          View Payments
-        </Button>
-      );
-    },
+    cell: (_, row) => (
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => onViewPayments?.(row as LoanData)}
+        className="flex items-center gap-2"
+      >
+        <Eye className="h-4 w-4" />
+        View Payments
+      </Button>
+    ),
     sortable: false,
     align: 'center',
   },
