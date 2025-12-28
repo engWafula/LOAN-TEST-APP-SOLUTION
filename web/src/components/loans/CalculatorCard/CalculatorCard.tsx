@@ -1,15 +1,15 @@
 import { LoanCalculator } from '../LoanCalculator';
 
 interface CalculatorCardProps {
-  principal?: number;
-  rate?: number;
-  months?: number;
+  principal: number;
+  rate: number;
+  months: number;
 }
 
 export function CalculatorCard({
-  principal = 10000,
-  rate = 5.0,
-  months = 12,
+  principal,
+  rate,
+  months,
 }: CalculatorCardProps) {
   return (
     <div className="space-y-4">

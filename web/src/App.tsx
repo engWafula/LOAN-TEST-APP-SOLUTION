@@ -59,7 +59,7 @@ function App() {
           </div>
 
           <div className="lg:sticky lg:top-8 h-fit">
-            <CalculatorCard />
+            <CalculatorCard  principal={10000} rate={2} months={12}/>
           </div>
         </div>
       </div>
