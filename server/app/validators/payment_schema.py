@@ -16,6 +16,7 @@ class PaymentCreateSchema(Schema):
         required=True,
         format="%Y-%m-%d",
         error_messages={
+            "required": "payment_date is required",
             "invalid": "payment_date must be in YYYY-MM-DD format"
         }
     )
@@ -24,6 +25,7 @@ class PaymentCreateSchema(Schema):
         required=True,
         validate=validate.Range(min=0),
         error_messages={
+            "required": "amount is required",
             "invalid": "amount must be a valid number",
             "validator_failed": "amount must be greater than or equal to 0"
         }
