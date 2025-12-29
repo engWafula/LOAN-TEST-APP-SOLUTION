@@ -8,18 +8,26 @@ class Config:
     PORT = int(os.environ.get("PORT", 5000))
     LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
 
-
 class DevelopmentConfig(Config):
+    """
+    enable GraphiQL which  exposes the schema  and allows querying the graphql endpoint in the browser
+    """
     DEBUG = True
     GRAPHIQL_ENABLED = True
 
 
 class ProductionConfig(Config):
+    """
+    disable GraphiQL  which avoids exposing the schema in the browser
+    """
     DEBUG = False
     GRAPHIQL_ENABLED = False
 
 
 class TestingConfig(Config):
+    """
+    disable GraphiQL  which avoids exposing the schema in the browser
+    """
     TESTING = True
     DEBUG = True
     GRAPHIQL_ENABLED = False

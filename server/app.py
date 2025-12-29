@@ -6,6 +6,8 @@ from app.config import config
 env = os.environ.get("FLASK_ENV", "development").lower()
 config_class = config.get(env, config["development"])
 
+
+
 app = create_app(config_class)
 
 if __name__ == "__main__":

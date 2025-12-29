@@ -32,6 +32,6 @@ EXPOSE 5000
 
 # Use environment variables for configuration
 ENV FLASK_APP=app.py
-ENV FLASK_ENV=production
+ENV FLASK_ENV=development
 
 CMD ["python", "app.py"]
