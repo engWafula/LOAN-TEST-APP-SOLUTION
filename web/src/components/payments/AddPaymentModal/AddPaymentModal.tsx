@@ -62,11 +62,11 @@ export function AddPaymentModal({ isOpen, onClose, onPaymentAdded, loans }: AddP
 
     try {
       const loanIdNum = parseInt(data.loan_id, 10);
-      const amountNum = data.amount && data.amount.trim() !== '' ? parseFloat(data.amount) : undefined;
+      const amountNum = parseFloat(data.amount);
 
       await addPayment({
         loan_id: loanIdNum,
-        payment_date: data.payment_date || undefined,
+        payment_date: data.payment_date,
         amount: amountNum,
       });
 
@@ -76,9 +76,6 @@ export function AddPaymentModal({ isOpen, onClose, onPaymentAdded, loans }: AddP
       if (onPaymentAdded) {
         onPaymentAdded();
       }
-
-
-        setSuccess(false);
 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add payment');
@@ -160,7 +157,7 @@ export function AddPaymentModal({ isOpen, onClose, onPaymentAdded, loans }: AddP
             <FormField
               label="Payment Date"
               htmlFor="payment_date"
-              optional
+              required
               error={errors.payment_date?.message}
             >
               <FormInput
@@ -175,7 +172,7 @@ export function AddPaymentModal({ isOpen, onClose, onPaymentAdded, loans }: AddP
             <FormField
               label="Amount"
               htmlFor="amount"
-              optional
+              required
               error={errors.amount?.message}
             >
               <FormInput

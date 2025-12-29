@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { LoanData } from '../../../utils/paymentStatus';
 import { categorizePayment, PaymentStatus } from '../../../utils/paymentStatus';
-import { PaymentStatus as PaymentStatusComponent } from '@/components/ui/PaymentStatus';
 import {
   Dialog,
   DialogContent,
@@ -48,17 +47,7 @@ export function ViewPaymentsModal({ isOpen, onClose, loan }: ViewPaymentsModalPr
         header: 'Due Date',
         accessor: (row) => row.dueDate,
         cell: (value) => formatDate(value as string),
-      },
-      {
-        id: 'status',
-        header: 'Status',
-        accessor: (row) => row.status,
-        cell: (value) => {
-          const status = value as PaymentStatus;
-          return <PaymentStatusComponent status={status} />;
-        },
-        align: 'center',
-      },
+      }
     ],
     []
   );
