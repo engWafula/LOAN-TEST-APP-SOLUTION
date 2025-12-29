@@ -34,6 +34,40 @@ The ESLint configuration is located in `eslint.config.js` and uses:
 - React hooks linting
 - React refresh rules
 
+## Running Tests
+
+This project uses Vitest for unit testing with React Testing Library for component testing.
+
+### Run Tests
+
+```bash
+# Run tests in watch mode (default)
+npm run test
+
+# Run tests once and exit
+npm run test -- --run
+
+# Run tests with UI interface
+npm run test:ui
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+### Test Configuration
+
+The test setup includes:
+- **Vitest** as the test runner
+- **jsdom** environment for DOM testing
+- **React Testing Library** for component testing
+- **MSW** (Mock Service Worker) for API mocking
+- Coverage reporting with v8 provider
+
+Test files should be located in:
+- `src/**/__tests__/**/*.test.tsx` or `src/**/__tests__/**/*.test.ts`
+- Files matching the pattern `**/*.test.{ts,tsx}`
+
+Coverage reports are generated in the `coverage/` directory when running `npm run test:coverage`.
 
 ## Expanding the ESLint configuration
 
