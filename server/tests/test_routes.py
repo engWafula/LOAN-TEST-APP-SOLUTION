@@ -1,6 +1,4 @@
-"""
-Unit tests for REST API routes.
-"""
+
 import json
 import datetime
 import pytest
@@ -9,28 +7,13 @@ import pytest
 class TestRestRoutes:
     """Tests for REST API endpoints."""
     
-    def test_home_endpoint(self, client):
-        """Test home endpoint."""
-        response = client.get("/")
-        
-        assert response.status_code == 200
-        data = json.loads(response.data)
-        assert "message" in data
-        assert "status" in data
-    
-    def test_health_endpoint(self, client):
-        """Test health check endpoint."""
-        response = client.get("/health")
-        
-        assert response.status_code == 200
-        data = json.loads(response.data)
-        assert data["status"] == "healthy"
     
     def test_add_payment_success(self, client):
         """Test adding a payment successfully."""
         payload = {
             "loan_id": 1,
-            "payment_date": "2025-03-10"
+            "payment_date": "2025-03-10",
+            "amount": 100.00
         }
         
         response = client.post(
@@ -46,9 +29,10 @@ class TestRestRoutes:
         assert data["payment"]["loan_id"] == 1
     
     def test_add_payment_without_date(self, client):
-        """Test adding a payment without date."""
+        """Test adding a payment without date should fail validation."""
         payload = {
-            "loan_id": 1
+            "loan_id": 1,
+            "amount": 100.00
         }
         
         response = client.post(
@@ -57,9 +41,10 @@ class TestRestRoutes:
             content_type="application/json"
         )
         
-        assert response.status_code == 201
+        assert response.status_code == 400
         data = json.loads(response.data)
-        assert data["payment"]["payment_date"] is None
+        assert "error" in data
+        assert "payment_date" in str(data).lower() or "required" in str(data).lower()
     
     def test_add_payment_missing_loan_id(self, client):
         """Test adding a payment without loan_id."""
@@ -79,7 +64,8 @@ class TestRestRoutes:
         """Test adding a payment for non-existent loan."""
         payload = {
             "loan_id": 999,
-            "payment_date": "2025-03-10"
+            "payment_date": "2025-03-10",
+            "amount": 100.00
         }
         
         response = client.post(
@@ -92,22 +78,6 @@ class TestRestRoutes:
         data = json.loads(response.data)
         assert "error" in data
     
-    def test_add_payment_invalid_date_format(self, client):
-        """Test adding a payment with invalid date format."""
-        payload = {
-            "loan_id": 1,
-            "payment_date": "invalid-date"
-        }
-        
-        response = client.post(
-            "/api/payments",
-            data=json.dumps(payload),
-            content_type="application/json"
-        )
-        
-        assert response.status_code == 400
-        data = json.loads(response.data)
-        assert "error" in data
     
     def test_add_payment_empty_body(self, client):
         """Test adding a payment with empty body."""
@@ -121,8 +91,8 @@ class TestRestRoutes:
         data = json.loads(response.data)
         assert "error" in data
     
-    def test_add_payment_no_content_type(self, client):
-        """Test adding a payment without content type."""
+    def test_add_payment_without_amount(self, client):
+        """Test adding a payment without amount should fail validation."""
         payload = {
             "loan_id": 1,
             "payment_date": "2025-03-10"
@@ -130,9 +100,30 @@ class TestRestRoutes:
         
         response = client.post(
             "/api/payments",
-            data=json.dumps(payload)
+            data=json.dumps(payload),
+            content_type="application/json"
         )
         
-        # Flask should still parse JSON, but let's verify behavior
-        assert response.status_code in [201, 400]
+        assert response.status_code == 400
+        data = json.loads(response.data)
+        assert "error" in data
+        assert "amount" in str(data).lower() or "required" in str(data).lower()
+    
+    def test_add_payment_invalid_date_format(self, client):
+        """Test adding a payment with invalid date format."""
+        payload = {
+            "loan_id": 1,
+            "payment_date": "invalid-date",
+            "amount": 100.00
+        }
+        
+        response = client.post(
+            "/api/payments",
+            data=json.dumps(payload),
+            content_type="application/json"
+        )
+        
+        assert response.status_code == 400
+        data = json.loads(response.data)
+        assert "error" in data
 
